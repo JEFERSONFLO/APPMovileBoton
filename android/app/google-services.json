@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1062112194689",
+    "project_id": "boton-alerta-99823",
+    "storage_bucket": "boton-alerta-99823.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1062112194689:android:18a758af45a85f2e87dd80",
+        "android_client_info": {
+          "package_name": "com.fflorescuba.Appboton"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4pEO8nwK2oPUZB3YNurP8q8lJetQs-AU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

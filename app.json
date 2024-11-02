@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "Appboton",
+    "slug": "boton-panico",
+    "version": "1.0.2",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.fflorescuba.Appboton"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.fflorescuba.Appboton"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },"assetBundlePatterns": [
+      "**/*"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "8bab7d23-9a55-45f1-966a-c5fec42fa813"
+      }
+    },
+    "owner": "fflorescuba"
+  }
+}
