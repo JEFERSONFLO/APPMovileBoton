@@ -1,5 +1,12 @@
 import React, { useContext } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image,Alert } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Alert,
+} from "react-native";
 import ExitIcon from "../assets/icons/exit.svg";
 import HomeIcon from "../assets/icons/homeActive.svg";
 import ListIcon from "../assets/icons/list.svg";
@@ -19,26 +26,34 @@ const BtnScreen = () => {
     await logout();
     navigation.reset({
       index: 0,
-      routes: [{ name: "Login" }],  
+      routes: [{ name: "Login" }],
     });
   };
   const handleAlertAndOtherActions = () => {
     console.log("Intentando enviar alerta...");
     if (socket) {
-      const alertMessage = "¡Alerta de robo! Se ha detectado actividad sospechosa. Por favor, asegúrese de su seguridad y comuníquese con las autoridades.";
+      const alertMessage =
+        "¡Alerta de robo! Se ha detectado actividad sospechosa. Por favor, asegúrese de su seguridad y comuníquese con las autoridades.";
       socket.emit("alerta", { message: alertMessage });
       console.log("Alerta enviada:", { message: alertMessage });
-      
-      
-      Alert.alert("Alerta enviada", "¡La alerta ha sido enviada correctamente!");
+
+      Alert.alert(
+        "Alerta enviada",
+        "¡La alerta ha sido enviada correctamente!"
+      );
     } else {
       console.error("Socket no está conectado");
     }
   };
-
-
-
-
+  const RecordScreen = () => {
+    navigation.navigate("RecordScreen");
+  };
+  const UpdateScreen = () => {
+    navigation.navigate("UpdateScreen");
+  };
+/*   const ScreenAlert =()=>{
+    navigation.navigate("Alert")
+  } */
 
   return (
     <View style={styles.container}>
@@ -60,8 +75,11 @@ const BtnScreen = () => {
         <Text style={styles.info}>Usar solo en casos</Text>
         <Text style={styles.info}>de emergencia</Text>
       </View>
-      <View style={styles.alertContainer} >
-        <TouchableOpacity style={styles.borderAlert} onPress={handleAlertAndOtherActions}>
+      <View style={styles.alertContainer}>
+        <TouchableOpacity
+          style={styles.borderAlert}
+          onPress={handleAlertAndOtherActions}
+        >
           <View style={styles.buttonAlert}>
             <Image
               source={require("../../assets/alerta.png")}
@@ -75,12 +93,18 @@ const BtnScreen = () => {
         <TouchableOpacity>
           <HomeIcon style={styles.iconOptions} width={24} height={24} />
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.buttonExit, styles.buttonListOptions]}>
+        <TouchableOpacity
+          style={[styles.buttonExit, styles.buttonListOptions]}
+          onPress={RecordScreen}
+        >
           <ListIcon style={styles.iconListOptions} width={24} height={24} />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={UpdateScreen}>
           <UserIcon style={styles.iconOptions} width={24} height={24} />
         </TouchableOpacity>
+        {/* <TouchableOpacity onPress={ScreenAlert}>
+          <Text>Alerta</Text>
+        </TouchableOpacity> */}
       </View>
     </View>
   );
@@ -159,7 +183,7 @@ const styles = StyleSheet.create({
     width: 225,
     height: 225,
     backgroundColor: "#e20713",
-    borderRadius: 50,
+    borderRadius: 40,
     justifyContent: "center",
     alignItems: "center",
   },

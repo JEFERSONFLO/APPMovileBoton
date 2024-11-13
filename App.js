@@ -9,10 +9,14 @@ import { PermissionsAndroid } from "react-native";
 import messaging from "@react-native-firebase/messaging";
 import { Linking } from "react-native";
 import TokenNofi from "./src/services/token/token";
-import AsyncStorage from "@react-native-async-storage/async-storage"; 
-import { Vibration, Platform } from 'react-native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Vibration, Platform } from "react-native";
 import AlertScreen from "./src/screens/AlertScreen";
-
+import ForgotPasswordScreen from "./src/screens/ForgotPasswordScreen";
+import UpdateScreen from "./src/screens/UpdateScreen";
+import CodePasswordScreen from "./src/screens/CodePasswordScreen";
+import ResetPasswordScreen from "./src/screens/ResetPasswordScreen";
+import RecordScreen from "./src/screens/RecordScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -97,11 +101,38 @@ const AppNavigator = () => {
         name="Register"
         component={RegisterScreen}
         options={{ headerShown: false }}
-      /><Stack.Screen
-      name="Alert"
-      component={AlertScreen}
-      options={{ headerShown: false }} // Añade AlertScreen
-    />
+      />
+      <Stack.Screen
+        name="Alert"
+        component={AlertScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ForgotPass"
+        component={ForgotPasswordScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="CodePassword"
+        component={CodePasswordScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ResetPassword"
+        component={ResetPasswordScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="UpdateScreen"
+        component={UpdateScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="RecordScreen"
+        component={RecordScreen}
+        options={{ headerShown: false }}
+      />
+      
     </Stack.Navigator>
   );
 };
@@ -118,14 +149,13 @@ const App = () => {
         authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
         authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-
       if (enabled) {
         console.log("Authorization status:", authStatus);
         const token = await messaging().getToken();
-        const authToken = await AsyncStorage.getItem('authToken');
-        console.log(authToken)
+        const authToken = await AsyncStorage.getItem("authToken");
+        console.log(authToken);
         const datatoken = { token: token };
-        TokenNofi(authToken,datatoken);
+        TokenNofi(authToken, datatoken);
         console.log("FCM token:", token);
       }
     };
@@ -140,47 +170,53 @@ const App = () => {
   }, []);
   useEffect(() => {
     // Listener para notificaciones en primer plano
-    const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
-      console.log("Notificación recibida en primer plano:", remoteMessage);
-      // Aquí puedes mostrar la notificación localmente o en una alerta personalizada
-    });
-  
+    const unsubscribeOnMessage = messaging().onMessage(
+      async (remoteMessage) => {
+        console.log("Notificación recibida en primer plano:", remoteMessage);
+        // Aquí puedes mostrar la notificación localmente o en una alerta personalizada
+      }
+    );
+
     // Listener para cuando la notificación abre la app desde segundo plano o cerrada
-    const unsubscribeOnNotificationOpenedApp = messaging().onNotificationOpenedApp(remoteMessage => {
-      console.log("Notificación abrió la aplicación:", remoteMessage);
-    });
-  
+    const unsubscribeOnNotificationOpenedApp =
+      messaging().onNotificationOpenedApp((remoteMessage) => {
+        console.log("Notificación abrió la aplicación:", remoteMessage);
+      });
+
     // Listener para recibir notificación en segundo plano
-    messaging().setBackgroundMessageHandler(async remoteMessage => {
+    messaging().setBackgroundMessageHandler(async (remoteMessage) => {
       console.log("Notificación recibida en segundo plano:", remoteMessage);
     });
-  
+
     return () => {
       unsubscribeOnMessage();
       unsubscribeOnNotificationOpenedApp();
     };
-  }, []); 
+  }, []);
   useEffect(() => {
-    const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
-      console.log("Notificación recibida en primer plano:", remoteMessage);
-      navigationRef.current?.navigate("Alert"); // Navegar a AlertScreen
-      if (Platform.OS === 'android') {
-        Vibration.vibrate(500); // Vibra durante 500 ms
-      } else {
-        Vibration.vibrate([0, 500, 200, 500]); // Ejemplo de patrón de vibración
+    const unsubscribeOnMessage = messaging().onMessage(
+      async (remoteMessage) => {
+        console.log("Notificación recibida en primer plano:", remoteMessage);
+        navigationRef.current?.navigate("Alert"); // Navegar a AlertScreen
+        if (Platform.OS === "android") {
+          Vibration.vibrate(500); // Vibra durante 500 ms
+        } else {
+          Vibration.vibrate([0, 500, 200, 500]); // Ejemplo de patrón de vibración
+        }
       }
-    });
+    );
 
-    const unsubscribeOnNotificationOpenedApp = messaging().onNotificationOpenedApp(remoteMessage => {
-      console.log("Notificación abrió la aplicación:", remoteMessage);
-      navigationRef.current?.navigate("Alert"); // Navegar a AlertScreen
-      Vibration.cancel();
-    });
+    const unsubscribeOnNotificationOpenedApp =
+      messaging().onNotificationOpenedApp((remoteMessage) => {
+        console.log("Notificación abrió la aplicación:", remoteMessage);
+        navigationRef.current?.navigate("Alert"); // Navegar a AlertScreen
+        Vibration.cancel();
+      });
 
-    messaging().setBackgroundMessageHandler(async remoteMessage => {
+    messaging().setBackgroundMessageHandler(async (remoteMessage) => {
       console.log("Notificación recibida en segundo plano:", remoteMessage);
       try {
-        await SoundPlayer.playSoundFile('custom_sound', 'wav');
+        await SoundPlayer.playSoundFile("custom_sound", "wav");
       } catch (e) {
         console.log(`No se pudo reproducir el sonido: ${e.message}`);
       }

@@ -34,7 +34,6 @@ const LoginScreen = () => {
       const dataLogin = { usuario, password };
       const response = await login({ dataLogin });
       setToken(response.access_token);
-      Alert.alert("Login exitoso", "Bienvenido!");
     } catch (error) {
       Alert.alert("Alerta Login", error.message);
     } finally {
@@ -45,6 +44,9 @@ const LoginScreen = () => {
     navigation.navigate("Register");
   };
 
+  const ForgotPass=()=>{
+    navigation.navigate("ForgotPass")
+  }
   return (
     <View style={styles.container}>
       {loading ? (
@@ -70,7 +72,7 @@ const LoginScreen = () => {
             onChangeText={setPassword}
             secureTextEntry
           />
-          <TouchableOpacity style={styles.forgotPassword}>
+          <TouchableOpacity style={styles.forgotPassword} onPress={ForgotPass}>
             <Text style={styles.forgotPasswordText}>
               ¿Olvidaste tu contraseña?
             </Text>

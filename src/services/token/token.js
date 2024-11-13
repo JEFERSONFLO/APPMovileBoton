@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useAuth } from "../../context/AuthContext/AuthContext";
 
 const TokenNofi = async (authToken,datatoken) => {
 
@@ -16,7 +15,7 @@ const TokenNofi = async (authToken,datatoken) => {
     );
     return response.data;
   } catch (error) {
-    console.error(error);
+    console.error("eorrrpendejo",error);
     throw error;
   }
 };

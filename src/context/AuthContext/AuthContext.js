@@ -5,6 +5,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children, navigation }) => {
   const [token, setToken] = useState(null);
   const [socket, setSocket] = useState(null);
+  const [alertData, setAlertData] = useState(null);
   useEffect(() => {
     const loadToken = async () => {
       const storedToken = await AsyncStorage.getItem("authToken");
@@ -17,7 +18,7 @@ export const AuthProvider = ({ children, navigation }) => {
   }, []);
   useEffect(() => {
     if (token) {
-      const socketConnection = io(`${process.env.EXPO_PUBLIC_API_URL_SOCKET}`, {
+      const socketConnection = io(`${process.env.EXPO_PUBLIC_URL_SOCKET}`, {
         query: { token },
         transports: ['websocket'], 
       });
@@ -27,6 +28,19 @@ export const AuthProvider = ({ children, navigation }) => {
       socketConnection.on("message", (data) => {
         console.log("Mensaje recibido:", data);
       });
+      socketConnection.on("alerta", (data) => {
+        const { message } = data.data;
+        const { nombres, piso, pasillo, numeroTienda } = data;
+        
+        setAlertData({
+          message,
+          nombres,
+          piso,
+          pasillo,
+          numeroTienda
+        });
+      });
+      
       socketConnection.on("disconnect", () => {
         console.log("Conexión Socket.IO cerrada");
       });
@@ -53,7 +67,7 @@ export const AuthProvider = ({ children, navigation }) => {
     }
   };
   return (
-    <AuthContext.Provider value={{ token, setToken: storeToken, logout,socket }}>
+    <AuthContext.Provider value={{ token, setToken: storeToken, logout,socket,alertData  }}>
       {children}
     </AuthContext.Provider>
   );

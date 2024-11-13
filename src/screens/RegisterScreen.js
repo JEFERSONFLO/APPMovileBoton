@@ -90,10 +90,8 @@ const RegisterScreen = () => {
         numeroTienda
       );
 
-     
       await fetchLogin();
 
-     
       navigation.reset({
         index: 0,
         routes: [{ name: "Home" }],
@@ -111,7 +109,10 @@ const RegisterScreen = () => {
       ) : (
         <>
           <View style={styles.container}>
-            <Image source={require("../assets/alerta.png")} style={styles.logo} />
+            <Image
+              source={require("../assets/alerta.png")}
+              style={styles.logo}
+            />
             <Text style={styles.title}>Regístrate</Text>
             <Text style={styles.label}>DNI</Text>
             <TextInput
