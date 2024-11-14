@@ -9,11 +9,12 @@ import {
   Alert,
 } from "react-native";
 import ValidateCode from "../services/Password/ValidateCode";
-
+import Clipboard from '@react-native-clipboard/clipboard';  // Importar Clipboard
+import { Ionicons } from "@expo/vector-icons";
 const CodePasswordScreen = () => {
   const navigation = useNavigation();
   const [code, setCode] = useState(["", "", "", "", "", ""]);
-  const inputRefs = useRef({}); // Usamos un objeto en lugar de un array para las referencias.
+  const inputRefs = useRef({});
 
   const handleChange = (text, index) => {
     if (text.length > 1) text = text.charAt(text.length - 1); // solo un dígito
@@ -22,14 +23,12 @@ const CodePasswordScreen = () => {
     newCode[index] = text;
     setCode(newCode);
 
-    // Si el texto no está vacío y no es el último campo, pasa al siguiente input
     if (text && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
   };
 
   const handleBackspace = (index) => {
-    // Si el campo está vacío, mover al anterior y borrar
     if (code[index] === "") {
       if (index > 0) {
         const newCode = [...code];
@@ -38,13 +37,11 @@ const CodePasswordScreen = () => {
         inputRefs.current[index - 1]?.focus();
       }
     } else {
-     
       const newCode = [...code];
       newCode[index] = "";
       setCode(newCode);
     }
   };
-
 
   const CodeValidation = async () => {
     if (code.includes("")) {
@@ -67,6 +64,15 @@ const CodePasswordScreen = () => {
     }
   };
 
+  const handlePaste = async () => {
+    const clipboardContent = await Clipboard.getString();  // Obtener contenido del portapapeles
+    if (clipboardContent.length === 6) {
+      setCode(clipboardContent.split("")); // Llenar los campos de entrada con el código
+    } else {
+      Alert.alert("Error", "El código copiado no tiene la longitud correcta.");
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.timerText}>El código tiene una duración de 5 minutos</Text>
@@ -81,19 +87,23 @@ const CodePasswordScreen = () => {
             onChangeText={(text) => handleChange(text, index)}
             keyboardType="default"
             maxLength={1}
-            ref={(ref) => (inputRefs.current[index] = ref)} // Usamos un objeto para las referencias
+            ref={(ref) => (inputRefs.current[index] = ref)}
             returnKeyType={index < 5 ? "next" : "done"}
             onKeyPress={({ nativeEvent }) => {
               if (nativeEvent.key === "Backspace") {
-                handleBackspace(index); // Manejar el retroceso
+                handleBackspace(index);
               }
             }}
           />
         ))}
       </View>
+      <TouchableOpacity style={styles.pasteButton} onPress={handlePaste}>
+       <Ionicons name="clipboard" size={30} color="#509BF8" />
+      </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={CodeValidation}>
         <Text style={styles.buttonText}>Enviar</Text>
       </TouchableOpacity>
+     
       <TouchableOpacity style={styles.buttonRecover} onPress={() => navigation.goBack()}>
         <View style={styles.buttonWhite}>
           <Text style={styles.buttonTextRecover}>Regresar</Text>
@@ -174,6 +184,12 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },pasteButton: {
+    backgroundColor: "#f0f0f0",
+    borderRadius: 40,
+    paddingVertical: 15,
+    alignItems: "center",
+    marginBottom: 20,
   },
 });
 

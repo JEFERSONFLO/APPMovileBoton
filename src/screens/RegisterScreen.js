@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ScrollView,
   View,
@@ -14,7 +14,7 @@ import {
 import { fetchregister } from "../services/auth/register";
 import login from "../services/auth/login";
 import { useAuth } from "../context/AuthContext/AuthContext";
-
+import { Ionicons } from "@expo/vector-icons";
 const RegisterScreen = () => {
   const navigation = useNavigation();
   const { token, setToken } = useAuth();
@@ -29,6 +29,9 @@ const RegisterScreen = () => {
   const [usuario, setUsuario] = useState("");
   const [loading, setLoading] = useState(false);
   const [numeroTienda, setNumeroTienda] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordValidation, setPasswordValidation] = useState("");
+  const [isValidPassword, setIsValidPassword] = useState(false);
   const Login = () => {
     navigation.navigate("Login");
   };
@@ -54,6 +57,71 @@ const RegisterScreen = () => {
     }
   };
 
+  const validatePassword = (password) => {
+    // Primero, validamos las letras mayúsculas y minúsculas
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+
+    // Luego validamos los caracteres especiales
+    const specialChars = password.match(/[@./\-_*]/g) || [];
+    const uniqueSpecialChars = new Set(specialChars); // Únicos caracteres especiales
+    const hasTwoSpecialChars = uniqueSpecialChars.size >= 2;
+
+    // Luego validamos los números
+    const numbers = password.match(/\d/g) || [];
+    const uniqueNumbers = new Set(numbers); // Únicos números
+    const hasThreeNumbers = uniqueNumbers.size >= 3;
+
+    // Finalmente, validamos la longitud mínima
+    const minLength = password.length >= 10;
+
+    return {
+      hasUpperCase,
+      hasLowerCase,
+      hasTwoSpecialChars,
+      hasThreeNumbers,
+      minLength,
+    };
+  };
+
+  useEffect(() => {
+    const {
+      hasUpperCase,
+      hasLowerCase,
+      hasTwoSpecialChars,
+      hasThreeNumbers,
+      minLength,
+    } = validatePassword(password);
+
+    // Primero se validan las letras mayúsculas y minúsculas
+    if (!hasUpperCase || !hasLowerCase) {
+      setPasswordValidation(
+        "Debe contener al menos una letra mayúscula y una minúscula."
+      );
+      setIsValidPassword(false);
+    }
+    // Luego los caracteres especiales
+    else if (!hasTwoSpecialChars) {
+      setPasswordValidation(
+        "Debe contener al menos 2 caracteres especiales diferentes (@./-*)."
+      );
+      setIsValidPassword(false);
+    }
+    // Después los números
+    else if (!hasThreeNumbers) {
+      setPasswordValidation("Debe contener al menos 3 números diferentes.");
+      setIsValidPassword(false);
+    }
+    // Finalmente, la longitud
+    else if (!minLength) {
+      setPasswordValidation("La contraseña debe tener al menos 10 caracteres.");
+      setIsValidPassword(false);
+    } else {
+      setPasswordValidation("Contraseña válida.");
+      setIsValidPassword(true);
+    }
+  }, [password]);
+
   const dataRegister = async () => {
     if (
       !dni ||
@@ -73,7 +141,10 @@ const RegisterScreen = () => {
       ]);
       return;
     }
-
+    if (!isValidPassword) {
+      Alert.alert("Alerta", "La contraseña no cumple con los requisitos.", [{ text: "OK" }]);
+      return;
+    }
     setLoading(true);
 
     try {
@@ -122,6 +193,7 @@ const RegisterScreen = () => {
               value={dni}
               maxLength={8}
               onChangeText={handleDniChange}
+              keyboardType="numeric"
             />
             <Text style={styles.label}>Usuario</Text>
             <TextInput
@@ -156,14 +228,33 @@ const RegisterScreen = () => {
               onChangeText={setEmail}
             />
             <Text style={styles.label}>Contraseña</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="*******"
-              placeholderTextColor="#C1C1C1"
-              secureTextEntry
-              value={password}
-              onChangeText={setPassword}
-            />
+            <View style={styles.passwordContainer}>
+              <TextInput
+                style={styles.inputP}
+                placeholder="*******"
+                placeholderTextColor="#C1C1C1"
+                secureTextEntry={!showPassword}
+                value={password}
+                onChangeText={setPassword}
+              />
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                <Ionicons
+                  name={showPassword ? "eye-off" : "eye"}
+                  size={24}
+                  color="#C1C1C1"
+                />
+              </TouchableOpacity>
+              {passwordValidation && (
+          <Text
+            style={[
+              styles.validationText,
+              isValidPassword ? { color: "green" } : { color: "red" },
+            ]}
+          >
+            {passwordValidation}
+          </Text>
+        )}
+            </View>
             <Text style={styles.label}>Celular</Text>
             <TextInput
               style={styles.input}
@@ -172,6 +263,7 @@ const RegisterScreen = () => {
               value={celular}
               onChangeText={handleCelularChange}
               maxLength={9}
+              keyboardType="numeric"
             />
             <Text style={styles.label}>N° de tienda</Text>
             <TextInput
@@ -242,6 +334,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   input: {
+    width: "100%",
     height: 58,
     borderColor: "#509BF8",
     borderWidth: 1,
@@ -250,6 +343,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     fontWeight: "bold",
     color: "#000",
+  },
+  inputP: {
+    flex: 1,
+    fontWeight: "bold",
   },
   button: {
     backgroundColor: "#509BF8",
@@ -277,6 +374,25 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 14,
     marginLeft: 5,
+  },
+  passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    height: 58,
+    borderColor: "#509BF8",
+    borderWidth: 1,
+    borderRadius: 10,
+    marginBottom: 50,
+    paddingHorizontal: 10,
+    fontWeight: "bold",
+    color: "#000",
+    position: "relative",
+  },  validationText: {
+    position: "absolute",
+    fontSize: 14,
+    marginTop: 10,
+    bottom: -30,
   },
 });
 

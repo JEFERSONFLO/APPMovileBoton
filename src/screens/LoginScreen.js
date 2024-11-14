@@ -12,13 +12,14 @@ import {
 import login from "../services/auth/login";
 import { useAuth } from "../context/AuthContext/AuthContext";
 import { useNavigation } from "@react-navigation/native";
-
+import { Ionicons } from "@expo/vector-icons";
 const LoginScreen = () => {
   const { token, setToken } = useAuth();
   const navigation = useNavigation();
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   useEffect(() => {
     if (token) {
       navigation.reset({
@@ -44,9 +45,9 @@ const LoginScreen = () => {
     navigation.navigate("Register");
   };
 
-  const ForgotPass=()=>{
-    navigation.navigate("ForgotPass")
-  }
+  const ForgotPass = () => {
+    navigation.navigate("ForgotPass");
+  };
   return (
     <View style={styles.container}>
       {loading ? (
@@ -64,14 +65,23 @@ const LoginScreen = () => {
             onChangeText={setUsuario}
           />
           <Text style={styles.label}>Contraseña</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="*******"
-            placeholderTextColor="#C1C1C1"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-          />
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.inputP}
+              placeholder="*******"
+              placeholderTextColor="#C1C1C1"
+              secureTextEntry={!showPassword} // Alternar visibilidad de la contraseña
+              value={password}
+              onChangeText={setPassword}
+            />
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+              <Ionicons
+                name={showPassword ? "eye-off" : "eye"}
+                size={24}
+                color="#C1C1C1"
+              />
+            </TouchableOpacity>
+          </View>
           <TouchableOpacity style={styles.forgotPassword} onPress={ForgotPass}>
             <Text style={styles.forgotPasswordText}>
               ¿Olvidaste tu contraseña?
@@ -91,6 +101,23 @@ const LoginScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  inputP: {
+    flex: 1,
+    fontWeight: "bold",
+  },
+  passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    height: 58,
+    borderColor: "#509BF8",
+    borderWidth: 1,
+    borderRadius: 10,
+    marginBottom: 20,
+    paddingHorizontal: 10,
+    fontWeight: "bold",
+    color: "#000",
+  },
   container: {
     height: "100%",
     backgroundColor: "#fff",
