@@ -61,28 +61,32 @@ const ResetPasswordScreen = () => {
     // Primero se validan las letras mayúsculas y minúsculas
     if (!hasUpperCase || !hasLowerCase) {
       setPasswordValidation(
-        "Debe contener al menos una letra mayúscula y una minúscula."
+        "La contraseña debe incluir al menos una letra mayúscula y una letra minúscula."
       );
       setIsValidPassword(false);
     }
     // Luego los caracteres especiales
     else if (!hasTwoSpecialChars) {
       setPasswordValidation(
-        "Debe contener al menos 2 caracteres especiales diferentes (@./-*)."
+        "La contraseña debe incluir al menos 2 caracteres especiales diferentes (por ejemplo: @, ., /, -, *)."
       );
       setIsValidPassword(false);
     }
     // Después los números
     else if (!hasThreeNumbers) {
-      setPasswordValidation("Debe contener al menos 3 números diferentes.");
+      setPasswordValidation(
+        "La contraseña debe incluir al menos 3 números diferentes."
+      );
       setIsValidPassword(false);
     }
     // Finalmente, la longitud
     else if (!minLength) {
-      setPasswordValidation("La contraseña debe tener al menos 10 caracteres.");
+      setPasswordValidation(
+        "La contraseña debe tener un mínimo de 10 caracteres."
+      );
       setIsValidPassword(false);
     } else {
-      setPasswordValidation("Contraseña válida.");
+      setPasswordValidation("La contraseña es válida.");
       setIsValidPassword(true);
     }
   }, [password]);
@@ -95,7 +99,9 @@ const ResetPasswordScreen = () => {
       return;
     }
     if (!isValidPassword) {
-      Alert.alert("Alerta", "La contraseña no cumple con los requisitos.", [{ text: "OK" }]);
+      Alert.alert("Alerta", "La contraseña no cumple con los requisitos.", [
+        { text: "OK" },
+      ]);
       return;
     }
     try {
@@ -128,6 +134,8 @@ const ResetPasswordScreen = () => {
             color="#C1C1C1"
           />
         </TouchableOpacity>
+      </View>
+      <>
         {passwordValidation && (
           <Text
             style={[
@@ -138,8 +146,7 @@ const ResetPasswordScreen = () => {
             {passwordValidation}
           </Text>
         )}
-      </View>
-
+      </>
       <TouchableOpacity style={styles.button} onPress={ResetPassword}>
         <Text style={styles.buttonText}>Enviar</Text>
       </TouchableOpacity>
@@ -218,17 +225,18 @@ const styles = StyleSheet.create({
     borderColor: "#509BF8",
     borderWidth: 1,
     borderRadius: 10,
-    marginBottom: 50,
+    marginBottom: 10,
     paddingHorizontal: 10,
     fontWeight: "bold",
     color: "#000",
     position: "relative",
   },
   validationText: {
-    position: "absolute",
+    width: "100%",
+    textAlign: "left",
     fontSize: 14,
-    marginTop: 10,
-    bottom: -30,
+    flexWrap: "wrap",
+    marginBottom: 20,
   },
 });
 

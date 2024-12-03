@@ -9,7 +9,7 @@ import {
   Alert,
 } from "react-native";
 import ValidateCode from "../services/Password/ValidateCode";
-import Clipboard from '@react-native-clipboard/clipboard';  // Importar Clipboard
+import Clipboard from "@react-native-clipboard/clipboard"; // Importar Clipboard
 import { Ionicons } from "@expo/vector-icons";
 const CodePasswordScreen = () => {
   const navigation = useNavigation();
@@ -53,19 +53,15 @@ const CodePasswordScreen = () => {
     console.log(codeString);
     try {
       const response = await ValidateCode(codeString);
-      Alert.alert("Verificación", response.message, [
-        {
-          text: "OK",
-          onPress: () => navigation.navigate("ResetPassword", { code: codeString }),
-        },
-      ]);
+
+      navigation.navigate("ResetPassword", { code: codeString });
     } catch (error) {
       Alert.alert("Error", error.message, [{ text: "OK" }]);
     }
   };
 
   const handlePaste = async () => {
-    const clipboardContent = await Clipboard.getString();  // Obtener contenido del portapapeles
+    const clipboardContent = await Clipboard.getString(); // Obtener contenido del portapapeles
     if (clipboardContent.length === 6) {
       setCode(clipboardContent.split("")); // Llenar los campos de entrada con el código
     } else {
@@ -75,7 +71,9 @@ const CodePasswordScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.timerText}>El código tiene una duración de 5 minutos</Text>
+      <Text style={styles.timerText}>
+        El código tiene una duración de 5 minutos
+      </Text>
       <Text style={styles.Recover}>Código de recuperación</Text>
       <Text style={styles.label}>Ingrese el código de 6 dígitos</Text>
       <View style={styles.codeContainer}>
@@ -98,13 +96,16 @@ const CodePasswordScreen = () => {
         ))}
       </View>
       <TouchableOpacity style={styles.pasteButton} onPress={handlePaste}>
-       <Ionicons name="clipboard" size={30} color="#509BF8" />
+        <Ionicons name="clipboard" size={30} color="#509BF8" />
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={CodeValidation}>
         <Text style={styles.buttonText}>Enviar</Text>
       </TouchableOpacity>
-     
-      <TouchableOpacity style={styles.buttonRecover} onPress={() => navigation.goBack()}>
+
+      <TouchableOpacity
+        style={styles.buttonRecover}
+        onPress={() => navigation.goBack()}
+      >
         <View style={styles.buttonWhite}>
           <Text style={styles.buttonTextRecover}>Regresar</Text>
         </View>
@@ -184,7 +185,8 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
-  },pasteButton: {
+  },
+  pasteButton: {
     backgroundColor: "#f0f0f0",
     borderRadius: 40,
     paddingVertical: 15,

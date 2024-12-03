@@ -51,39 +51,39 @@ const RecordScreen = () => {
     fetchHistory();
   }, []);
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Historial</Text>
-        <ScrollView style={styles.recordContainer}>
-          {loading ? (
-            <ActivityIndicator size="large" color="#0000ff" />
-          ) : (
-            historyData.map((record, index) => (
-              <TouchableOpacity key={index} style={styles.record}>
-                <View style={styles.recordGroupOne}>
-                  <Text
-                    style={styles.recordTitle}
-                  >{`Alerta: ${record.alerta.tipo_alerta}`}</Text>
-                  <Text
-                    style={styles.recordInfo}
-                  >{`Tienda: ${record.user.numeroTienda}`}</Text>
-                  <Text
-                    style={styles.recordInfo}
-                  >{`Piso: ${record.user.piso}`}</Text>
-                </View>
-                <View style={styles.recordGroupTwo}>
-                  <Text
-                    style={styles.recordInfoTwo}
-                  >{`Hora: ${record.hora}`}</Text>
-                  <Text
-                    style={styles.recordInfoTwo}
-                  >{`Fecha: ${record.fecha}`}</Text>
-                </View>
-              </TouchableOpacity>
-            ))
-          )}
+    <View style={styles.container}>
+      <Text style={styles.title}>Historial</Text>
+      {loading ? (
+        <View style={styles.containerlanding}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      ) : (
+        <ScrollView contentContainerStyle={styles.recordContainer} showsVerticalScrollIndicator={false}>
+          {historyData.map((record, index) => (
+            <TouchableOpacity key={index} style={styles.record}>
+              <View style={styles.recordGroupOne}>
+                <Text
+                  style={styles.recordTitle}
+                >{`Alerta: ${record.alerta.tipo_alerta}`}</Text>
+                <Text
+                  style={styles.recordInfo}
+                >{`Tienda: ${record.user.numeroTienda}`}</Text>
+                <Text
+                  style={styles.recordInfo}
+                >{`Piso: ${record.user.piso}`}</Text>
+              </View>
+              <View style={styles.recordGroupTwo}>
+                <Text
+                  style={styles.recordInfoTwo}
+                >{`Hora: ${record.hora}`}</Text>
+                <Text
+                  style={styles.recordInfoTwo}
+                >{`Fecha: ${record.fecha}`}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
         </ScrollView>
-      </View>
+      )}
       <View style={styles.optionsContainer}>
         <TouchableOpacity onPress={Home}>
           <HomeIcon style={styles.iconOptions} width={24} height={24} />
@@ -97,22 +97,15 @@ const RecordScreen = () => {
           <UserIcon style={styles.iconOptions} width={24} height={24} />
         </TouchableOpacity>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  scrollContainer: {
-    flexGrow: 1,
-    justifyContent: "center",
-    paddingTop: 20,
-    backgroundColor: "#FBFBFB",
-  },
   container: {
-    width: "100vw",
+    flex: 1, // Asegura que el contenedor ocupe todo el espacio disponible
     backgroundColor: "#FBFBFB",
     paddingHorizontal: 20,
-    justifyContent: "center",
   },
   title: {
     fontSize: 24,
@@ -121,16 +114,13 @@ const styles = StyleSheet.create({
     color: "#000",
   },
   recordContainer: {
-    marginVertical: 10,
-    display: "flex",
-    flexDirection: "column",
-    gap: 18,
-    height: 660,
+    flexGrow: 1,
+    paddingBottom: 20, // Espacio adicional al final para evitar superposición con el footer
   },
   record: {
     borderRadius: 12,
     paddingVertical: 18,
-    paddingHorizontal: 36,
+    paddingHorizontal: 30,
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
@@ -200,6 +190,12 @@ const styles = StyleSheet.create({
   iconListOptions: {
     width: 36,
     height: 36,
+  },
+  containerlanding: {
+    flex: 1,
+    height: "100%",
+    display: "flex",
+    justifyContent:"center"
   },
 });
 

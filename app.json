@@ -2,7 +2,7 @@
   "expo": {
     "name": "Appboton",
     "slug": "boton-panico",
-    "version": "1.0.2",
+    "version": "1.2.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",

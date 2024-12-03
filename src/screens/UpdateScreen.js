@@ -7,7 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
-  Alert,
+  Alert,ActivityIndicator
 } from "react-native";
 import ListIcon from "../assets/icons/list.svg";
 import UserIcon from "../assets/icons/user.svg";
@@ -27,6 +27,7 @@ const UpdateScreen = () => {
     pasillo: "",
   });
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
   const Home = () => {
     navigation.navigate("Home");
   };
@@ -39,6 +40,7 @@ const UpdateScreen = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const authToken = await AsyncStorage.getItem("authToken");
         const response = await me(authToken);
         console.log("Fetched user data:", response);
@@ -57,24 +59,36 @@ const UpdateScreen = () => {
       } catch (error) {
         Alert.alert("Error", error.message, [{ text: "OK" }]);
         console.error("Error fetching data:", error);
+      } finally{
+        setLoading(false);
       }
     };
     fetchData();
   }, []);
 
-  const UpdateUser= async ()=>{
-    try{
+  const UpdateUser = async () => {
+    try {
+      setLoading(true);
       const authToken = await AsyncStorage.getItem("authToken");
       const response = await update(authToken, userData);
-      Alert.alert("Actualizado", "Tu perfil ha sido actualizado", [{ text: "OK" }]);
-    }catch(error){
+      Alert.alert("Actualizado", "Tu perfil ha sido actualizado", [
+        { text: "OK" },
+      ]);
+    } catch (error) {
       Alert.alert("Error", error.message, [{ text: "OK" }]);
       console.error("Error updating user data:", error.message);
+    } finally{
+      setLoading(false);
     }
-  }
+  };
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.container}>
+    <View style={styles.container}>
+       {loading ? (
+        <View style={styles.containerlanding}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      ) : (
+      <ScrollView contentContainerStyle={styles.containerFomr} showsVerticalScrollIndicator={false}>
         {userData.fotoUrl ? (
           <Image source={{ uri: userData.fotoUrl }} style={styles.logo} />
         ) : (
@@ -88,6 +102,7 @@ const UpdateScreen = () => {
           placeholderTextColor="#C1C1C1"
           value={userData.dni}
           onChangeText={(text) => setUserData({ ...userData, dni: text })}
+          keyboardType="numeric"
         />
         <Text style={styles.label}>Nombres</Text>
         <TextInput
@@ -112,6 +127,7 @@ const UpdateScreen = () => {
           placeholderTextColor="#C1C1C1"
           value={userData.celular}
           onChangeText={(text) => setUserData({ ...userData, celular: text })}
+          keyboardType="numeric"
         />
         <Text style={styles.label}>N° Tienda</Text>
         <TextInput
@@ -119,7 +135,9 @@ const UpdateScreen = () => {
           placeholder="N° 70"
           placeholderTextColor="#C1C1C1"
           value={userData.numeroTienda}
-          onChangeText={(text) => setUserData({ ...userData, numeroTienda: text })}
+          onChangeText={(text) =>
+            setUserData({ ...userData, numeroTienda: text })
+          }
         />
         <Text style={styles.label}>Piso</Text>
         <TextInput
@@ -137,13 +155,14 @@ const UpdateScreen = () => {
           value={userData.pasillo}
           onChangeText={(text) => setUserData({ ...userData, pasillo: text })}
         />
-        <TouchableOpacity style={styles.button}  onPress={UpdateUser}>
+        <TouchableOpacity style={styles.button} onPress={UpdateUser}>
           <Text style={styles.buttonText}>Actualizar</Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>)}
+
       <View style={styles.optionsContainer}>
         <TouchableOpacity onPress={Home}>
-        <HomeIcon style={styles.iconOptions} width={24} height={24} />
+          <HomeIcon style={styles.iconOptions} width={24} height={24} />
         </TouchableOpacity>
         <View style={styles.buttonListOptionsContainer}>
           <TouchableOpacity
@@ -157,7 +176,7 @@ const UpdateScreen = () => {
           <UserIcon style={styles.iconOptions} width={24} height={24} />
         </TouchableOpacity>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -169,11 +188,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#FBFBFB",
   },
   container: {
-    width: "100vw",
-    height: "auto",
+    flex: 1, // Asegura que el contenedor ocupe todo el espacio disponible
+    backgroundColor: "#FBFBFB",
+    paddingHorizontal: 20,
+  },
+  containerFomr: {
     paddingBottom: 50,
     backgroundColor: "#fff",
-    paddingHorizontal: 20,
+    paddingHorizontal: 0,
     justifyContent: "center",
     backgroundColor: "#FBFBFB",
   },
@@ -252,6 +274,11 @@ const styles = StyleSheet.create({
   iconListOptions: {
     width: 36,
     height: 36,
+  }, containerlanding: {
+    flex: 1,
+    height: "100%",
+    display: "flex",
+    justifyContent:"center"
   },
 });
 

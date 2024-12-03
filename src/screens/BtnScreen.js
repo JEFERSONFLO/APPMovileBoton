@@ -102,9 +102,7 @@ const BtnScreen = () => {
         <TouchableOpacity onPress={UpdateScreen}>
           <UserIcon style={styles.iconOptions} width={24} height={24} />
         </TouchableOpacity>
-        {/* <TouchableOpacity onPress={ScreenAlert}>
-          <Text>Alerta</Text>
-        </TouchableOpacity> */}
+     
       </View>
     </View>
   );
@@ -203,6 +201,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: "auto",
     paddingVertical: 32,
+    backgroundColor: "#fff",
+    height: 95,
   },
   iconOptions: {
     width: 32,

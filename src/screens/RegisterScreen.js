@@ -96,28 +96,32 @@ const RegisterScreen = () => {
     // Primero se validan las letras mayúsculas y minúsculas
     if (!hasUpperCase || !hasLowerCase) {
       setPasswordValidation(
-        "Debe contener al menos una letra mayúscula y una minúscula."
+        "La contraseña debe incluir al menos una letra mayúscula y una letra minúscula."
       );
       setIsValidPassword(false);
     }
     // Luego los caracteres especiales
     else if (!hasTwoSpecialChars) {
       setPasswordValidation(
-        "Debe contener al menos 2 caracteres especiales diferentes (@./-*)."
+        "La contraseña debe incluir al menos 2 caracteres especiales diferentes (por ejemplo: @, ., /, -, *)."
       );
       setIsValidPassword(false);
     }
     // Después los números
     else if (!hasThreeNumbers) {
-      setPasswordValidation("Debe contener al menos 3 números diferentes.");
+      setPasswordValidation(
+        "La contraseña debe incluir al menos 3 números diferentes."
+      );
       setIsValidPassword(false);
     }
     // Finalmente, la longitud
     else if (!minLength) {
-      setPasswordValidation("La contraseña debe tener al menos 10 caracteres.");
+      setPasswordValidation(
+        "La contraseña debe tener un mínimo de 10 caracteres."
+      );
       setIsValidPassword(false);
     } else {
-      setPasswordValidation("Contraseña válida.");
+      setPasswordValidation("La contraseña es válida.");
       setIsValidPassword(true);
     }
   }, [password]);
@@ -142,7 +146,9 @@ const RegisterScreen = () => {
       return;
     }
     if (!isValidPassword) {
-      Alert.alert("Alerta", "La contraseña no cumple con los requisitos.", [{ text: "OK" }]);
+      Alert.alert("Alerta", "La contraseña no cumple con los requisitos.", [
+        { text: "OK" },
+      ]);
       return;
     }
     setLoading(true);
@@ -174,7 +180,10 @@ const RegisterScreen = () => {
     }
   };
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
+    <ScrollView
+      contentContainerStyle={styles.scrollContainer}
+      showsVerticalScrollIndicator={false}
+    >
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
@@ -244,17 +253,19 @@ const RegisterScreen = () => {
                   color="#C1C1C1"
                 />
               </TouchableOpacity>
-              {passwordValidation && (
-          <Text
-            style={[
-              styles.validationText,
-              isValidPassword ? { color: "green" } : { color: "red" },
-            ]}
-          >
-            {passwordValidation}
-          </Text>
-        )}
             </View>
+            <>
+              {passwordValidation && (
+                <Text
+                  style={[
+                    styles.validationText,
+                    isValidPassword ? { color: "green" } : { color: "red" },
+                  ]}
+                >
+                  {passwordValidation}
+                </Text>
+              )}
+            </>
             <Text style={styles.label}>Celular</Text>
             <TextInput
               style={styles.input}
@@ -383,16 +394,18 @@ const styles = StyleSheet.create({
     borderColor: "#509BF8",
     borderWidth: 1,
     borderRadius: 10,
-    marginBottom: 50,
+    marginBottom: 10,
     paddingHorizontal: 10,
     fontWeight: "bold",
     color: "#000",
     position: "relative",
-  },  validationText: {
-    position: "absolute",
+  },
+  validationText: {
+    width: "100%",
+    textAlign: "left",
     fontSize: 14,
-    marginTop: 10,
-    bottom: -30,
+    flexWrap: "wrap",
+    marginBottom: 20,
   },
 });
 
