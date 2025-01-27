@@ -36,10 +36,10 @@ const RegisterScreen = () => {
     navigation.navigate("Login");
   };
 
-  const handleDniChange = (value) => {
+ /*  const handleDniChange = (value) => {
     const formattedDni = value.replace(/[^0-9]/g, "");
     setDni(formattedDni);
-  };
+  }; */
 
   const handleCelularChange = (value) => {
     const formattedCelular = value.replace(/[^0-9]/g, "");
@@ -129,7 +129,6 @@ const RegisterScreen = () => {
   const dataRegister = async () => {
     if (
       !dni ||
-      dni.length !== 8 ||
       !nombres ||
       !apellidos ||
       !password ||
@@ -194,15 +193,16 @@ const RegisterScreen = () => {
               style={styles.logo}
             />
             <Text style={styles.title}>Regístrate</Text>
-            <Text style={styles.label}>DNI</Text>
+            <Text style={styles.label}>Documento de Identidad (DNI o Extranjero)</Text>
+
             <TextInput
               style={styles.input}
               placeholder="12345678"
               placeholderTextColor="#C1C1C1"
               value={dni}
-              maxLength={8}
-              onChangeText={handleDniChange}
-              keyboardType="numeric"
+              maxLength={32}
+              onChangeText={setDni}
+            
             />
             <Text style={styles.label}>Usuario</Text>
             <TextInput

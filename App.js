@@ -59,6 +59,7 @@ const linking = {
     if (typeof url === "string") {
       return url;
     }
+
     const message = await messaging().getInitialNotification();
     const deeplinkURL = buildDeepLinkFromNotificationData(message?.data);
     if (typeof deeplinkURL === "string") {
